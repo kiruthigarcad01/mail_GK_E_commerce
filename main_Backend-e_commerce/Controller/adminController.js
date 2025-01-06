@@ -2,13 +2,13 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+require('dotenv').config(); 
 
 const addProduct = async (req, res) => {
     const { name, description, category, price, rating, seller, stock, imageUrl } = req.body;
     const adminId = req.adminId;
+
   
-    
     if (!name || !description || !category || !price || !rating || !seller || !stock || !imageUrl || !adminId) {
         return res.status(400).json({ message: 'All fields are required' });
     }
@@ -17,29 +17,31 @@ const addProduct = async (req, res) => {
         
         const newProduct = await prisma.product.create({
             data: {
-              name,
-              description,
-              category,
-              price,
-              rating,
-              seller,
-              stock,
-              imageUrl,
-              admin: {
-                connect: {
-                  id : adminId
-                },
-              }
+                name,
+                description,
+                category,
+                price,
+                rating,
+                seller,
+                stock,
+                imageUrl,
+                admin: {
+                    connect: {
+                        id: adminId
+                    },
+                }
             }
-          });
-          
-        console.log('Product added:', newProduct);  
-        res.status(201).json({ message: 'Product added successfully', product: newProduct });  
+        });
+
+        console.log('Product added:', newProduct);
+        res.status(201).json({ message: 'Product added successfully', product: newProduct });
+
     } catch (error) {
-        console.error('Error adding product:', error);  
-        res.status(500).json({ message: 'Internal server error' });  
+        console.error('Error adding product:', error.message, error.stack);  
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 const editProduct = async (req, res) => {
   const { id } = req.params; 
